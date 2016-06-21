@@ -77,12 +77,12 @@ function Header(){
 	$this->Cell($w,9,$place.", ".$hoy,0,0,'C');
 }
 
-function Body(){
+/*function Body(){
 	$nombre =  "Alondra Perez";
 	$w = $this->GetStringWidth($nombre);
 	$this->Cell($w,9,$nombre,1,0,'C');
 
-}
+}*/
 
 
 function Lema(){}
@@ -233,6 +233,42 @@ function BasicTable($header, $data)
 
 }
 
+ session_start();
+	include('LoginNuevo/server.php');
+	$mysqli = new mysqli($hostname, $username, $password,$bdeDatos);
+	if ($mysqli->connect_error) {
+		die("Connection failed: " . $mysqli->connect_error);
+	}
+    $tableName = "umichccu_sistemaIncidentes.ejemplo";
+	$folioCeneval=279479759;
+	$query="SELECT NOMBRE, APE_MAT, APE_PAT, FOLIO_CENEVAL, MATRICULA, LUG_GPI, PCNE, PPMA, PPAN, DICTAMEN FROM umichccu_sistemaIncidentes.ejemplo where FOLIO_CENEVAL=$folioCeneval";
+    $query = "select * from info_completa_aspirantes where FOLIO_CENEVAL=$folioCeneval";
+//	echo $query;
+	$result = mysqli_query($mysqli, $query);
+    if ($result->num_rows > 0) {
+        $row=mysqli_fetch_array($result,MYSQLI_ASSOC);
+        $lugar = $row['LUG_GPI'];
+        $nombre = $row['nombre_aspirante']." ".$row['APE_PAT']." ".$row['APE_MAT'];
+        $matricula = $row['MATRICULA'];
+        $dictamen = $row['DICTAMEN'];
+        $carrera = $row['nombre_carrera'];
+        $facultad = $row['nombre'];
+        
+        $PCNE = $row['PCNE'];
+        $pensamiento_Matematico=$row['PPMA'];
+        $pensamento_analitico=$row['PPAN'];
+        $comprension_lectora = $row['PCLE'];
+        $lenguaje_escrito = $row['PDD_MC_LES'];
+        $biologia = $row['PDD_MC_BIO'];
+        $quimica = $row['PDD_MC_QUI'];
+        $ingles= $row['PDD_MC_ING'];
+        $promedio = $row['PGPI'];
+        
+        
+            
+        
+
+
 
 setlocale (LC_TIME, "es_ES");
 date_default_timezone_set('America/Mexico_City');
@@ -253,29 +289,27 @@ $department = "Centro de Cómputo y Procesos de Información Universitaria";
 $department = iconv("UTF-8", "ISO-8859-1", $department);
 
 $lema = '"2015, Año del Generalísimo Jose María Morelos y Pavón"';
-$lema = '"Cuna de Héroes Crisol de Pensadores"';
+$lema = '"Cuna de Héroes, Crisol de Pensadores"';
 $lema = iconv("UTF-8", "ISO-8859-1", $lema);
 
-$remitente = $nombre." ".$apellido;
+$remitente = "M. en T.I. Elvia Lucina Guadalupe Arce Ávila";
 $remitente = iconv("UTF-8", "ISO-8859-1", $remitente);
 
 //$puesto = "Directora del Centro de Cómputo y Procesos de Información Universitaria";
 $puesto = "puesto";
 $puesto = iconv("UTF-8", "ISO-8859-1", $puesto);
 
-$dest = "Destinatario Info";
-$dest = iconv("UTF-8", "ISO-8859-1", $dest);
 
-$licenciatura = "(aquí va la licenciatura)";
+$dest = iconv("UTF-8", "ISO-8859-1", $nombre);
+
+$licenciatura =  $carrera;
 $ciclo = "2016/2017";
-$facultad = 'Facultad de Ciencias Médicas y Biológicas "Dr. Ignacio Chávez"';
 $localidad = "Foráneo";
-$lugar = "4";
-$calificacion = "10";
 
-$cuerpo = 'Por este medio, le informo que de acuerdo a los resultados de la aplicación del examen de CENEVAL para el ingreso a la Licenciatura '.$licenciatura.' de la '.$facultad.' ciclo escolar '.$ciclo.', las calificaciones obtenidas por usted en la relación de solicitantes '.$localidad.' fueron las siguientes:';
 
-$cierre = "Así mismo le comunico que obtuvo el lugar ".$lugar." con una calificación ponderada de ".$calificacion;
+$cuerpo = 'Por este medio, le informo que de acuerdo a los resultados de la aplicación del examen de CENEVAL para el ingreso a la Licenciatura de '.$licenciatura.' de la '.$facultad.' ciclo escolar '.$ciclo.', las calificaciones obtenidas por usted en la relación de solicitantes '.$localidad.' fueron las siguientes:';
+
+$cierre = "Así mismo le comunico que obtuvo el lugar ".$lugar." con una calificación ponderada de ".$promedio;
 $cierre = iconv("UTF-8", "ISO-8859-1", $cierre);
 
 $conCopia = 'C.c.p. Dr. Jaime Espino Valencia, \n Secretario Académico de la Universidad Michoacana de San Nicolás de Hidalgo. Dr. José Apolinar Cortes, Director de Control Escolar de la Universidad Michoacana, Mtro. Gabino Estévez Delgado, Coordinador de la Comisión Especial para analizar los Mecanismos de Ingresoa la Universidad Michoacana. Dra. Silvia Hernández Capi, Directora de la Facultad de Ciencias Médicas y Biológicas "Dr. Ignacio Chavez"';
@@ -295,16 +329,29 @@ $nombreColumna2 =iconv("UTF-8", "ISO-8859-1", 'Calificación');
 $header = array($nombreColumna1, $nombreColumna2);
 
 
+/*
+ $PCNE = $row['PCNE'];
+        $pensamiento_Matematico=$row['PPMA'];
+        $pensamento_analitico=$row['PPAN'];
+        $comprension_lectora = $row['PCLE'];
+        $lenguaje_escrito = $row['PDD_MC_LES'];
+        $biologia = $row['PDD_MC_BIO'];
+        $quimica = $row['PDD_MC_QUI'];
+        $ingles= $row['PDD_MC_ING'];
+        $promedio = $row['PGPI'];
+
+*/
+
 $calificaciones = array
   (
-    array(iconv("UTF-8", "ISO-8859-1", 'Pensamiento matemático'),10),
-    array(iconv("UTF-8", "ISO-8859-1", 'Pensamiento Analítico'),10),
-    array(iconv("UTF-8", "ISO-8859-1", 'Estructura de la Lengua'),10),
-     array(iconv("UTF-8", "ISO-8859-1", 'Comprensión Lectora'),10),
-     array(iconv("UTF-8", "ISO-8859-1", 'Química'),10),
-     array(iconv("UTF-8", "ISO-8859-1", 'Biología'),10),
-     array(iconv("UTF-8", "ISO-8859-1", 'Lenguaje escrito'),10),
-     array(iconv("UTF-8", "ISO-8859-1", 'Inglés'),10)
+    array(iconv("UTF-8", "ISO-8859-1", 'PCNE'),$PCNE),
+    array(iconv("UTF-8", "ISO-8859-1", 'Pensamiento Matemático'),$pensamiento_Matematico),
+    array(iconv("UTF-8", "ISO-8859-1", 'Pensamiento Analítico'),$pensamento_analitico),
+     array(iconv("UTF-8", "ISO-8859-1", 'Comprensión Lectora'),$comprension_lectora),
+     array(iconv("UTF-8", "ISO-8859-1", 'Lenguaje Escrito'),$lenguaje_escrito),
+     array(iconv("UTF-8", "ISO-8859-1", 'Biología'),$biologia),
+     array(iconv("UTF-8", "ISO-8859-1", 'Química'),$quimica),
+     array(iconv("UTF-8", "ISO-8859-1", 'Inglés'),$ingles)
   );
 
 
@@ -325,5 +372,12 @@ $pdf -> Output();
 //You can do an else, but I prefer a separate statement
 
 
+        
+         
+                        
+                      
+                    }else{
+                        echo "<p>No hay resultados: Verifica tu numero de matrícula</p>";
+                    }
 
 ?>
