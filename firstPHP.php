@@ -1,25 +1,12 @@
 <?php
-
-
 $idPersonalDestinatario = "Destinatario";
-
 $nombre= "M. en T.I. Lucina Guadalupe";
-
 $apellido= "Arce Ávila";
 $id= "adfa";
 $puesto  = "Director";
-
 $anio =strftime("%Y");
-
 $oficioNumero = $anio;
-
-
-
-  
 require('fpdf.php');
-
-
-
 class PDF extends FPDF{
 
 function Header(){
@@ -100,7 +87,7 @@ function Footer()
     // Text color in gray
     $this->SetTextColor(128);
     // Page number
-    $this->Cell(0,10,'Pagina '.$this->PageNo(),0,0,'C');
+   // $this->Cell(0,10,'Pagina '.$this->PageNo(),0,0,'C');
 }
 
 
@@ -165,7 +152,7 @@ function CloseLetter($remitente,$puesto,$lema){
 	//$this->Ln(10);
     $this->SetFont('Helvetica','I',12);
     $this->MultiCell($totalWidth-$leftMargin*2,5,$lema,0,'C');
-	$this->Ln(10);
+	$this->Ln(15);
 	$this->SetFont('Helvetica','B',12);
 	$this->MultiCell($totalWidth-$leftMargin*2,5,$remitente,0,'C');
 	$this->SetFont('Helvetica','',$normalLetterSize);
@@ -182,10 +169,15 @@ function footNote($dests){
 	global $normalLetterSize;
 	//aqui se ubica el cursor, en este caso es enseguida del ultimo renglon
 	$Y = $this->GetY();
-	$this ->SetY($Y);
+	$this ->SetY(255);
 	$this->Ln(5);
-	$this->SetFont('Helvetica','',8);
-	$this->MultiCell($totalWidth-$leftMargin*2,5,$dests,0,'L');
+	$this->SetFont('Helvetica','',7);
+     $this->MultiCell($totalWidth-$leftMargin*2,3,"C.c.p.",0,'L');
+    foreach ($dests as $d){
+        $this->MultiCell($totalWidth-$leftMargin*2,3,$d,0,'L');
+    }
+	
+   // $this->MultiCell($totalWidth-$leftMargin*2,3,$dests[1],0,'L');
 }
 
 
@@ -232,15 +224,18 @@ function BasicTable($header, $data)
 
 
 }
+      
+        
+
 
  session_start();
-	include('LoginNuevo/server.php');
+	include('consulta_ceneval/server.php');
 	$mysqli = new mysqli($hostname, $username, $password,$bdeDatos);
 	if ($mysqli->connect_error) {
 		die("Connection failed: " . $mysqli->connect_error);
 	}
     $tableName = "umichccu_sistemaIncidentes.ejemplo";
-	$folioCeneval=279479759;
+	$folioCeneval=292722052;
 	$query="SELECT NOMBRE, APE_MAT, APE_PAT, FOLIO_CENEVAL, MATRICULA, LUG_GPI, PCNE, PPMA, PPAN, DICTAMEN FROM umichccu_sistemaIncidentes.ejemplo where FOLIO_CENEVAL=$folioCeneval";
     $query = "select * from info_completa_aspirantes where FOLIO_CENEVAL=$folioCeneval";
 //	echo $query;
@@ -307,13 +302,23 @@ $ciclo = "2016/2017";
 $localidad = "Foráneo";
 
 
-$cuerpo = 'Por este medio, le informo que de acuerdo a los resultados de la aplicación del examen de CENEVAL para el ingreso a la Licenciatura de '.$licenciatura.' de la '.$facultad.' ciclo escolar '.$ciclo.', las calificaciones obtenidas por usted en la relación de solicitantes '.$localidad.' fueron las siguientes:';
+$cuerpo = 'Por este medio, le informo que de acuerdo a los resultados de la aplicación del examen de CENEVAL para el ingreso a la Licenciatura en '.$licenciatura.' de la '.$facultad.' ciclo escolar '.$ciclo.', las calificaciones obtenidas por usted en la relación de solicitantes '.$localidad.' fueron las siguientes:';
 
 $cierre = "Así mismo le comunico que obtuvo el lugar ".$lugar." con una calificación ponderada de ".$promedio;
 $cierre = iconv("UTF-8", "ISO-8859-1", $cierre);
 
 $conCopia = 'C.c.p. Dr. Jaime Espino Valencia, \n Secretario Académico de la Universidad Michoacana de San Nicolás de Hidalgo. Dr. José Apolinar Cortes, Director de Control Escolar de la Universidad Michoacana, Mtro. Gabino Estévez Delgado, Coordinador de la Comisión Especial para analizar los Mecanismos de Ingresoa la Universidad Michoacana. Dra. Silvia Hernández Capi, Directora de la Facultad de Ciencias Médicas y Biológicas "Dr. Ignacio Chavez"';
 $conCopia = iconv("UTF-8", "ISO-8859-1", $conCopia);
+        
+        
+$conCopiaA = array
+  (
+    iconv("UTF-8", "ISO-8859-1", 'Dr. Jaime Espino Valencia, Secretario Académico de la Universidad Michoacana de San Nicolás de Hidalgo'),
+        iconv("UTF-8", "ISO-8859-1", 'Dr. José Apolinar Cortes, Director de Control Escolar de la Universidad Michoacana'),
+        iconv("UTF-8", "ISO-8859-1", 'Mtro. Gabino Estévez Delgado, Coordinador de la Comisión Especial para analizar los Mecanismos de Ingresoa la Universidad Michoacana'),
+          iconv("UTF-8", "ISO-8859-1", 'Dra. Silvia Hernández Capi, Directora de la Facultad de Ciencias Médicas y Biológicas "Dr. Ignacio Chavez"')      
+                
+  );           
 
 
 $tipo = 'Memorandum';
@@ -321,26 +326,11 @@ $asunto = 'Saludos';
 $place = 'Morelia, Michoacán';
 $place = iconv("UTF-8", "ISO-8859-1", $place);
 
-$hoy =strftime("%A, %d de %B de %Y %H:%M");
-
+$hoy =strftime("%A, %d de %B de %Y");
 
 $nombreColumna1 =iconv("UTF-8", "ISO-8859-1", 'Habilidad'); 
 $nombreColumna2 =iconv("UTF-8", "ISO-8859-1", 'Calificación'); 
 $header = array($nombreColumna1, $nombreColumna2);
-
-
-/*
- $PCNE = $row['PCNE'];
-        $pensamiento_Matematico=$row['PPMA'];
-        $pensamento_analitico=$row['PPAN'];
-        $comprension_lectora = $row['PCLE'];
-        $lenguaje_escrito = $row['PDD_MC_LES'];
-        $biologia = $row['PDD_MC_BIO'];
-        $quimica = $row['PDD_MC_QUI'];
-        $ingles= $row['PDD_MC_ING'];
-        $promedio = $row['PGPI'];
-
-*/
 
 $calificaciones = array
   (
@@ -366,7 +356,7 @@ $pdf -> LetterBody($dest,$cuerpo,$header,$calificaciones,$cierre,$puesto);
 $puestoDelRemitente = "Directora del Centro de Cómputo y Procesos de Información Universitaria";
 $puestoDelRemitente = iconv("UTF-8", "ISO-8859-1", $puestoDelRemitente);
 $pdf -> CloseLetter($remitente,$puestoDelRemitente,$lema);
-$pdf -> footNote($conCopia);
+$pdf -> footNote($conCopiaA);
 $pdf -> Output();
 
 //You can do an else, but I prefer a separate statement

@@ -72,7 +72,7 @@
 ?>
             
   </div>
-          <form action="login.php" class="form-signin" method="post">   
+          <form action="consultaCalif.php" class="form-signin" method="post">   
            
         <button class="btn btn-lg btn-primary btn-block" type="submit">Consultar otro folio</button>
         </form>
